@@ -27,8 +27,16 @@
     <ClInclude Include="Source\Private\Tetris.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Private\Log.cpp" />
     <ClCompile Include="Source\Public\Rendering.cpp" />
     <ClCompile Include="Source\Public\Tetris.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico" />
+    <Image Include="Tetris.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tetris.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -83,7 +91,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PublicIncludeDirectories>D:\Programming\Tetris\Source\Public;$(PublicIncludeDirectories);D:\Programming\Tetris\Source\Private;D:\Programming\Tetris\Source\Private</PublicIncludeDirectories>
+    <PublicIncludeDirectories>
+    </PublicIncludeDirectories>
     <IncludePath>D:\Programming\Tetris\Source\Private;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
