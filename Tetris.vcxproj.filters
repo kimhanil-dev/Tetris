@@ -10,9 +10,6 @@
     <Filter Include="Source\Private">
       <UniqueIdentifier>{9e44ce89-3c5f-4ef5-99ab-2ce1d5cc6d52}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource">
-      <UniqueIdentifier>{9bc8bac8-385f-4112-88ea-a12657859d01}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Private\framework.h">
@@ -41,21 +38,5 @@
     <ClCompile Include="Source\Public\Tetris.cpp">
       <Filter>Source\Public</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Private\Log.cpp">
-      <Filter>Source\Public</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>Resource</Filter>
-    </Image>
-    <Image Include="Tetris.ico">
-      <Filter>Resource</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Tetris.rc">
-      <Filter>Resource</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>
