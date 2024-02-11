@@ -2,7 +2,7 @@
 
 # 사양
 - Windows 10 버전 1803(10.0.17134.0) 이상 
-  - '28f56b9ba3d52034bf0f7f2ec396202e159b1533' 커밋에 추가된 'setlocale(LC_ALL, ".UTF8")'의 ['UTF-8'을 해당 버전 이후 부터 지원](https://learn.microsoft.com/ko-kr/cpp/c-runtime-library/reference/setlocale-wsetlocale?view=msvc-170#utf-8-support)
+  - [`28f56b9ba3d52034bf0f7f2ec396202e159b1533`](https://github.com/kimhanil-dev/Tetris/commit/28f56b9ba3d52034bf0f7f2ec396202e159b1533) `커밋`에 추가된 `setlocale(LC_ALL, ".UTF8")`의 [`UTF-8`을 해당 버전 이후 부터 지원](https://learn.microsoft.com/ko-kr/cpp/c-runtime-library/reference/setlocale-wsetlocale?view=msvc-170#utf-8-support)
         
 
 
