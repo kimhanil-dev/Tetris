@@ -9,7 +9,6 @@ using namespace std;
 #define DEFAULT_LOG_FORMAT_T(format) _T("[file : %s], [line : %d], [function : %s] : {"##format"}\n")
 #define LOG(format, ...) Logger::GetInstance()->Log(DEFAULT_LOG_FORMAT_T(##format), _T(__FILE__), __LINE__, _T(__FUNCTION__), __VA_ARGS__)
 
-
 /*
 * 로그를 기록하는 클래스입니다.
 */
@@ -41,6 +40,14 @@ public:
 	TCHAR* mLogBuffer = nullptr;
 	size_t mLogBufferSize = 1024;
 	size_t mLogBufferUsedSize = 0;	// NULL 문자를 제외한 문자열의 길이
+
+	/*
+		Log가 씌여질 때마다 호출되는 콜백 함수입니다.
+	*/
+	typedef void(*LogCallback)(const TCHAR* log);
+	vector<LogCallback> mLogCallbacks;
+
+	void AddCallback(LogCallback callback);
 
 	/*
 	* 지금까지 기록된 로그를 반환합니다.

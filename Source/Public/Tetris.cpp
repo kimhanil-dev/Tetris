@@ -6,6 +6,9 @@
 
 #include "Log.h"
 
+// 콘솔을 하위 시스템으로 설정
+#pragma comment( linker, "/entry:WinMainCRTStartup /subsystem:console" )
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -33,9 +36,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_TETRIS, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
-
-    LOG("%d", 10);
-    LOG("%d", 50);
 
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))

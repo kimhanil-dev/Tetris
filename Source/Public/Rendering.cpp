@@ -2,6 +2,8 @@
 #include "Rendering.h"
 #include <assert.h>
 
+
+
 bool Renderer::Initialize(HWND hwnd)
 {
 	if (bIsInitialized)

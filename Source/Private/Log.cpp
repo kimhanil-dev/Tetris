@@ -14,6 +14,11 @@ Logger::~Logger()
 	}
 }
 
+void Logger::AddCallback(LogCallback callback)
+{
+	mLogCallbacks.push_back(callback);
+}
+
 size_t Logger::GetLog(TCHAR** buffer)
 {
 	if (mLogBuffer == nullptr)
@@ -68,6 +73,12 @@ void Logger::Log(const TCHAR* format, ...)
 	_vstprintf_s(catStart, mLogBufferSize - mLogBufferUsedSize, format, args); // NULL이 추가되는 부분
 
 	mLogBufferUsedSize = mLogBufferUsedSize + size;
-
+	
 	va_end(args);
+
+	// 로그가 작성되었음을 전파합니다.
+	for (auto callback : mLogCallbacks)
+	{
+		callback(catStart);
+	}
 }
