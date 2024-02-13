@@ -38,7 +38,7 @@ Renderer gRenderer;
 void LogWrited(const TCHAR* log);
 
 vector<Vertex>  gMesh;
-int*            gIndices = nullptr;
+vector<int>     gIndices;
 int             gIndexCount = 0;
 
 void Init()
@@ -98,12 +98,13 @@ void Init()
                 }
 
                 gIndexCount = mesh->GetPolygonVertexCount();
-                gIndices = mesh->GetPolygonVertices();
-                LOG(_T("Index count : %d"), gIndices);
+                int* indices = mesh->GetPolygonVertices();
+                gIndices.insert(gIndices.begin(), &indices[0],  &indices[gIndexCount]);
+                LOG(_T("Index count : %d"), gIndexCount);
             }
         }
 
-        //gRenderer.DrawVertices(gVertices, 5);
+        gRenderer.PushVertexBuffer(gMesh.data(), gIndices.data(), gIndexCount);
 
         scene->Destroy();
         importer->Destroy();
@@ -166,7 +167,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
         }
 
         Update();
-        Render();
+        //Render();
     }
 
     Release();
@@ -248,7 +249,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Parse the menu selections:
             switch (wmId)
             {
-               
+            case ID_ACTION_DRAW:
+                LOG(_T("%s"), _T("Draw ¹öÆ° Å¬¸¯µÊ"));
+                Render();
+                break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 LOG(_T("%s"), _T("DialogBox ¹öÆ° Å¬¸¯µÊ"));

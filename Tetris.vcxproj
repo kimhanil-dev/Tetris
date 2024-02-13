@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Source\Private\framework.h" />
     <ClInclude Include="Source\Private\Log.h" />
     <ClInclude Include="Source\Private\Renderer.h" />
@@ -27,7 +28,6 @@
     <ClInclude Include="Source\Private\Tetris.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FBXManager.h" />
     <ClCompile Include="Source\Private\Log.cpp" />
     <ClCompile Include="Source\Public\Renderer.cpp" />
     <ClCompile Include="Source\Public\Tetris.cpp" />

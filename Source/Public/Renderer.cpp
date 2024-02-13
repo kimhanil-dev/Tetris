@@ -57,19 +57,25 @@ void Renderer::OnPaint(HDC hdc)
 		return;
 	}
 
-	for (int i = 0; i < mVertexBuffers.size(); i++)
+	for (const auto& renderJob : mRenderQueue)
 	{
-		Vertex* vertices	= mVertexBuffers[i];
-		int numVertices		= mVertexBufferSizes[i];
-
-		for (int j = 0; j < (numVertices - 1); j++)
+		for (int index = 0; index < (renderJob.mIndexCount - 1); ++index)
 		{
-			mGraphics->DrawLine(mPen, vertices[j].x, vertices[j].y, vertices[j + 1].x, vertices[j + 1].y);
+			PointF p1, p2;
+
+			p1.X = renderJob.mVertices[renderJob.mIndices[index]].x + renderJob.mVertices[renderJob.mIndices[index]].z;
+			p1.Y = renderJob.mVertices[renderJob.mIndices[index]].y + renderJob.mVertices[renderJob.mIndices[index]].z;
+
+			p2.X = renderJob.mVertices[renderJob.mIndices[index + 1]].x + renderJob.mVertices[renderJob.mIndices[index + 1]].z;
+			p2.Y = renderJob.mVertices[renderJob.mIndices[index + 1]].y + renderJob.mVertices[renderJob.mIndices[index + 1]].z;
+
+
+			mGraphics->DrawLine(mPen,p1,p2);
 		}
 	}
 }
 
-void Renderer::PushVertexBuffer(Vertex* vertices, int* indices, int indexCount)
+void Renderer::PushVertexBuffer(const Vertex* vertices, const int* indices, const int indexCount)
 {
-	mRenderBuffer.push_back(RenderBuffer(vertices, indices, indexCount));
+	mRenderQueue.push_back({vertices, indices, indexCount});
 }

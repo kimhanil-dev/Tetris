@@ -33,6 +33,7 @@
     <ClInclude Include="Source\Private\Tetris.h">
       <Filter>Source\Private</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Public\Renderer.cpp">
@@ -43,9 +44,6 @@
     </ClCompile>
     <ClCompile Include="Source\Private\Log.cpp">
       <Filter>Source\Public</Filter>
-    </ClCompile>
-    <ClCompile Include="FBXManager.h">
-      <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

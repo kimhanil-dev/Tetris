@@ -18,7 +18,7 @@ public:
 	float r, g, b, a;
 };
 
-class Render
+struct RenderJob
 {
 	const Vertex*	mVertices;
 	const int*		mIndices;
@@ -36,7 +36,7 @@ public:
 	void Release();
 	void OnPaint(HDC hdc);
 
-	void PushVertexBuffer(Vertex* vertices, int* indices, int indexCount);
+	void PushVertexBuffer(const Vertex* vertices, const int* indices, const int indexCount);
 protected:
 	GdiplusStartupInput mGdiplusStartupInput;
 	ULONG_PTR			mGdiplusToken				= NULL;
@@ -46,5 +46,5 @@ protected:
 	bool bIsInitialized = false;
 	bool bIsReleased	= false;
 
-	vector<RenderBuffer> mRenderBuffer;
+	vector<RenderJob> mRenderQueue;
 };
