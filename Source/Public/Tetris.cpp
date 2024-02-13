@@ -11,9 +11,11 @@
 #endif
 
 #include <iostream>
+#include <fbxsdk.h>
 
 #include "framework.h"
 #include "Tetris.h"
+#include "Renderer.h"
 
 #include "Log.h"
 
@@ -30,8 +32,99 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+Renderer gRenderer;
+
 // 로그 콜백 함수
 void LogWrited(const TCHAR* log);
+
+vector<Vertex>  gMesh;
+int*            gIndices = nullptr;
+int             gIndexCount = 0;
+
+void Init()
+{
+    gRenderer.Initialize(GetActiveWindow());
+
+
+    // FBX 로드
+    FbxManager* manager = FbxManager::Create();
+
+    FbxIOSettings* ioSettings = FbxIOSettings::Create(manager, IOSROOT);
+    manager->SetIOSettings(ioSettings);
+
+    FbxImporter* importer = FbxImporter::Create(manager, "");
+    if (!importer->Initialize("box.fbx", -1, manager->GetIOSettings()))
+    {
+		LOG(_T("FbxImporter Initialize failed"));
+
+        importer->Destroy();
+		manager->Destroy();
+		return;
+	}
+    else
+    {
+        FbxScene* scene = FbxScene::Create(manager, "tempName");
+
+        importer->Import(scene);
+
+        FbxNode* rootNode = scene->GetRootNode();
+        if (rootNode)
+        {
+            int numChild = rootNode->GetChildCount();
+            FbxNode* childNode = nullptr;
+
+            for (int i = 0; i < numChild; ++i)
+            {
+                childNode = rootNode->GetChild(i);
+                FbxMesh* mesh = childNode->GetMesh();
+
+                if (mesh != nullptr)
+                {
+                    //Get Vertices
+                    int numVertices = mesh->GetControlPointsCount();
+
+                    for (int j = 0; j < numVertices; ++j)
+                    {
+                        gMesh.push_back(Vertex());
+
+                        FbxVector4 vertex = mesh->GetControlPointAt(j);
+
+                        gMesh[j].x = (float)vertex.mData[0];
+                        gMesh[j].y = (float)vertex.mData[1];
+                        gMesh[j].z = (float)vertex.mData[2];
+
+                        LOG(_T("vertex[%d] : {%f, %f, %f}"), j, gMesh[j].x, gMesh[j].y, gMesh[j].z);
+                    }
+                }
+
+                gIndexCount = mesh->GetPolygonVertexCount();
+                gIndices = mesh->GetPolygonVertices();
+                LOG(_T("Index count : %d"), gIndices);
+            }
+        }
+
+        //gRenderer.DrawVertices(gVertices, 5);
+
+        scene->Destroy();
+        importer->Destroy();
+        manager->Destroy();
+    }
+}
+
+void Update()
+{
+    
+}
+
+void Render()
+{
+    RedrawWindow(GetActiveWindow(), 0, 0, RDW_INTERNALPAINT);
+}
+
+void Release()
+{
+    gRenderer.Release();
+}
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -41,10 +134,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: Place code here.
-    setlocale(LC_ALL, ".UTF8"); // Unicode 한글 출력을 위한 로케일 설정, Windows 10 버전 1803(10.0.17134.0)부터만 UTF-8 지원
-    AllocConsole();              // 콘솔창 띄우기
-    Logger::GetInstance()->AddCallback(LogWrited);
+    setlocale(LC_ALL, ".UTF8");                     // Unicode 한글 출력을 위한 로케일 설정, Windows 10 버전 1803(10.0.17134.0)부터만 UTF-8 지원
+    AllocConsole();                                 // 콘솔창 띄우기
+    Logger::GetInstance()->AddCallback(LogWrited);  // 로그 콜백 함수 등록
 
     // Initialize global strings
     LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -56,6 +148,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+
+    // inialize renderer
+    Init();
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TETRIS));
 
@@ -69,7 +164,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+
+        Update();
+        Render();
     }
+
+    Release();
 
     return (int) msg.wParam;
 }
@@ -165,7 +265,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+            {
+                // TODO: Add any drawing code that uses hdc here...
+                gRenderer.OnPaint(hdc);
+            }
             EndPaint(hWnd, &ps);
         }
         break;
@@ -186,12 +289,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
         return (INT_PTR)TRUE;
-        LOG(_T("%s"), _T("DialogBox 생성됨"));
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
         {
-            LOG(_T("%s"), _T("DialogBox 종료됨"));
-
             EndDialog(hDlg, LOWORD(wParam));
             return (INT_PTR)TRUE;
         }

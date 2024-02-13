@@ -21,14 +21,15 @@
   <ItemGroup>
     <ClInclude Include="Source\Private\framework.h" />
     <ClInclude Include="Source\Private\Log.h" />
-    <ClInclude Include="Source\Private\Rendering.h" />
+    <ClInclude Include="Source\Private\Renderer.h" />
     <ClInclude Include="Source\Private\Resource.h" />
     <ClInclude Include="Source\Private\targetver.h" />
     <ClInclude Include="Source\Private\Tetris.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FBXManager.h" />
     <ClCompile Include="Source\Private\Log.cpp" />
-    <ClCompile Include="Source\Public\Rendering.cpp" />
+    <ClCompile Include="Source\Public\Renderer.cpp" />
     <ClCompile Include="Source\Public\Tetris.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -131,13 +132,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2020.3.4\lib\vs2022\x64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

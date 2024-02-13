@@ -7,7 +7,7 @@
 using namespace std;
 
 #define DEFAULT_LOG_FORMAT_T(format) _T("[file : %s], [line : %d], [function : %s] : {") format _T("}\n")
-#define LOG(format, ...) Logger::GetInstance()->Log(DEFAULT_LOG_FORMAT_T(format), _T(__FILE__), __LINE__, _T(__FUNCTION__), __VA_ARGS__)
+#define LOG(format, ...) Logger::GetInstance()->Log(DEFAULT_LOG_FORMAT_T(format), _T(__FILE__), __LINE__, _T(__FUNCTION__), ##__VA_ARGS__)
 
 /*
 * 로그를 기록하는 클래스입니다.
@@ -19,14 +19,7 @@ private:
 	Logger();
 	~Logger();
 
-public:
-
-	static Logger* GetInstance()
-	{
-		static Logger instance;
-		return &instance;
-	}
-
+protected:
 	/*
 		TODO : 로그 버퍼의 초기 사이즈를 설정할 수 있도록 사용자에게
 		함수를 제공해야 합니다. 
@@ -38,14 +31,22 @@ public:
 	size_t mBufferSpareSize = 256;
 
 	TCHAR* mLogBuffer = nullptr;
-	size_t mLogBufferSize = 1024;
-	size_t mLogBufferUsedSize = 0;	// NULL 문자를 제외한 문자열의 길이
-
+	size_t mLogBufferSize = 0;
+	size_t mLogBufferUsedSize = 1024;	// NULL 문자를 제외한 문자열의 길이
+	
 	/*
 		Log가 씌여질 때마다 호출되는 콜백 함수입니다.
 	*/
 	typedef void(*LogCallback)(const TCHAR* log);
 	vector<LogCallback> mLogCallbacks;
+
+public:
+	
+	static Logger* GetInstance()
+	{
+		static Logger instance;
+		return &instance;
+	}
 
 	void AddCallback(LogCallback callback);
 
@@ -54,5 +55,8 @@ public:
 	*/
 	size_t GetLog(TCHAR** buffer);
 
+	/*
+	* 로그 작성
+	*/
 	void Log(const TCHAR* format, ...);
 };

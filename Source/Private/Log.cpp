@@ -63,7 +63,7 @@ void Logger::Log(const TCHAR* format, ...)
 		mLogBufferSize += mBufferSpareSize * incresmentCount;
 		mLogBuffer = new TCHAR[mLogBufferSize];
 
-		_tcscpy_s(mLogBuffer, mLogBufferUsedSize, temp);
+		_tcscpy_s(mLogBuffer, mLogBufferSize, temp);
 
 		delete[] temp;
 	}

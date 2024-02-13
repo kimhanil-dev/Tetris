@@ -21,7 +21,7 @@
     <ClInclude Include="Source\Private\Log.h">
       <Filter>Source\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Private\Rendering.h">
+    <ClInclude Include="Source\Private\Renderer.h">
       <Filter>Source\Private</Filter>
     </ClInclude>
     <ClInclude Include="Source\Private\Resource.h">
@@ -35,7 +35,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Public\Rendering.cpp">
+    <ClCompile Include="Source\Public\Renderer.cpp">
       <Filter>Source\Public</Filter>
     </ClCompile>
     <ClCompile Include="Source\Public\Tetris.cpp">
@@ -43,6 +43,9 @@
     </ClCompile>
     <ClCompile Include="Source\Private\Log.cpp">
       <Filter>Source\Public</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXManager.h">
+      <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
