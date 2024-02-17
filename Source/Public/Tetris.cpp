@@ -10,12 +10,14 @@
     #define tcout std::cout
 #endif
 
-#include <iostream>
 #include <fbxsdk.h>
+#include <iostream>
+#include <math.h>
 
 #include "framework.h"
-#include "Tetris.h"
+#include "MathUtils.h"
 #include "Renderer.h"
+#include "Tetris.h"
 
 #include "Log.h"
 
@@ -55,7 +57,7 @@ void Init()
     FbxImporter* importer = FbxImporter::Create(manager, "");
     if (!importer->Initialize("box.fbx", -1, manager->GetIOSettings()))
     {
-		LOG(_T("FbxImporter Initialize failed"));
+		LOG_CALL(_T("FbxImporter Initialize failed"));
 
         importer->Destroy();
 		manager->Destroy();
@@ -93,14 +95,14 @@ void Init()
                         gMesh[j].y = (float)vertex.mData[1];
                         gMesh[j].z = (float)vertex.mData[2];
 
-                        LOG(_T("vertex[%d] : {%f, %f, %f}"), j, gMesh[j].x, gMesh[j].y, gMesh[j].z);
+                        LOG(_T("vertex[%d] : {%f, %f, %f}\n"), j, gMesh[j].x, gMesh[j].y, gMesh[j].z);
                     }
                 }
 
                 gIndexCount = mesh->GetPolygonVertexCount();
                 int* indices = mesh->GetPolygonVertices();
                 gIndices.insert(gIndices.begin(), &indices[0],  &indices[gIndexCount]);
-                LOG(_T("Index count : %d"), gIndexCount);
+                LOG(_T("Index count : %d\n"), gIndexCount);
             }
         }
 
@@ -114,7 +116,28 @@ void Init()
 
 void Update()
 {
+    /*
+        Rotation
+    */
+    static float rX = 0.0f, rY = 0.0f, rZ = 0.0f;
+
+    rX += 0.01f * 180 / 3.141592f;
     
+    Matrix4 ZRotMatrix;
+    Matrix4::Identity(ZRotMatrix);
+
+    ZRotMatrix._m11 = cos(rX);
+    ZRotMatrix._m12 = -sin(rX);
+    ZRotMatrix._m21 = sin(rX);
+    ZRotMatrix._m22 = cos(rX);
+
+    Vector4 testVector = {1, 1, 1, 0};
+
+    Vector4 rotatedVector = ZRotMatrix * testVector;
+
+    LOG(_T("Vector : {%f, %f, %f, %f} \n"), testVector.x, testVector.y, testVector.z, testVector.w);
+    LOG(_T("Rotated Vector : {%f, %f, %f, %f}, Angle {%f} \n"), rotatedVector.x, rotatedVector.y, rotatedVector.z, rotatedVector.w, rX);
+
 }
 
 void Render()
@@ -167,7 +190,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
         }
 
         Update();
-        //Render();
+        Render();
     }
 
     Release();
@@ -250,12 +273,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
             case ID_ACTION_DRAW:
-                LOG(_T("%s"), _T("Draw ¹öÆ° Å¬¸¯µÊ"));
+                LOG(_T("%s\n"), _T("Draw ¹öÆ° Å¬¸¯µÊ"));
                 Render();
                 break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                LOG(_T("%s"), _T("DialogBox ¹öÆ° Å¬¸¯µÊ"));
+                LOG(_T("%s\n"), _T("DialogBox ¹öÆ° Å¬¸¯µÊ"));
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);

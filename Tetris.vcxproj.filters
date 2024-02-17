@@ -34,6 +34,9 @@
       <Filter>Source\Private</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\Private\MathUtils.h">
+      <Filter>Source\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Public\Renderer.cpp">

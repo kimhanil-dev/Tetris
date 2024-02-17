@@ -7,7 +7,8 @@
 using namespace std;
 
 #define DEFAULT_LOG_FORMAT_T(format) _T("[file : %s], [line : %d], [function : %s] : {") format _T("}\n")
-#define LOG(format, ...) Logger::GetInstance()->Log(DEFAULT_LOG_FORMAT_T(format), _T(__FILE__), __LINE__, _T(__FUNCTION__), ##__VA_ARGS__)
+#define LOG_CALL(format, ...) Logger::GetInstance()->Log(DEFAULT_LOG_FORMAT_T(format), _T(__FILE__), __LINE__, _T(__FUNCTION__), ##__VA_ARGS__)
+#define LOG(format, ...) Logger::GetInstance()->Log(format, ##__VA_ARGS__)
 
 /*
 * 로그를 기록하는 클래스입니다.

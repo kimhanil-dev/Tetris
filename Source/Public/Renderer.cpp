@@ -21,7 +21,7 @@ bool Renderer::Initialize(HWND hwnd)
 {
 	if (bIsInitialized)
 	{
-		LOG(_T("Renderer is already initialized."));
+		LOG_CALL(_T("Renderer is already initialized."));
 		return false;
 	}
 
@@ -29,7 +29,7 @@ bool Renderer::Initialize(HWND hwnd)
 	mGraphics	= new Gdiplus::Graphics(hwnd);
 	mPen		= new Gdiplus::Pen(Gdiplus::Color(255, 0, 0, 0));
 
-	LOG(_T("Renderer initialized"));
+	LOG_CALL(_T("Renderer initialized\n"));
 
 	return true;
 }
@@ -47,7 +47,7 @@ void Renderer::Release()
 
 	bIsReleased = true;
 
-	LOG(_T("Renderer released"));
+	LOG_CALL(_T("Renderer released\n"));
 }
 
 void Renderer::OnPaint(HDC hdc)
@@ -62,12 +62,14 @@ void Renderer::OnPaint(HDC hdc)
 		for (int index = 0; index < (renderJob.mIndexCount - 1); ++index)
 		{
 			PointF p1, p2;
+			
+			static const int POSITION_OFFSET = 500;
 
-			p1.X = renderJob.mVertices[renderJob.mIndices[index]].x + renderJob.mVertices[renderJob.mIndices[index]].z;
-			p1.Y = renderJob.mVertices[renderJob.mIndices[index]].y + renderJob.mVertices[renderJob.mIndices[index]].z;
+			p1.X = renderJob.mVertices[renderJob.mIndices[index]].x + POSITION_OFFSET;
+			p1.Y = renderJob.mVertices[renderJob.mIndices[index]].y + POSITION_OFFSET;
 
-			p2.X = renderJob.mVertices[renderJob.mIndices[index + 1]].x + renderJob.mVertices[renderJob.mIndices[index + 1]].z;
-			p2.Y = renderJob.mVertices[renderJob.mIndices[index + 1]].y + renderJob.mVertices[renderJob.mIndices[index + 1]].z;
+			p2.X = renderJob.mVertices[renderJob.mIndices[index + 1]].x + POSITION_OFFSET;
+			p2.Y = renderJob.mVertices[renderJob.mIndices[index + 1]].y + POSITION_OFFSET;
 
 
 			mGraphics->DrawLine(mPen,p1,p2);
