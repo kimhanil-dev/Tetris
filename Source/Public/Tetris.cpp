@@ -121,23 +121,28 @@ void Update()
     */
     static float rX = 0.0f, rY = 0.0f, rZ = 0.0f;
 
-    rX += 0.01f * 180 / 3.141592f;
+    rX += 1.0f;
+    float rotateRadian = rX * 3.141592f / 180;
     
     Matrix4 ZRotMatrix;
     Matrix4::Identity(ZRotMatrix);
 
-    ZRotMatrix._m11 = cos(rX);
-    ZRotMatrix._m12 = -sin(rX);
-    ZRotMatrix._m21 = sin(rX);
-    ZRotMatrix._m22 = cos(rX);
+    ZRotMatrix._m11 = cos(rotateRadian);
+    ZRotMatrix._m12 = -sin(rotateRadian);
+    ZRotMatrix._m21 = sin(rotateRadian);
+    ZRotMatrix._m22 = cos(rotateRadian);
 
     Vector4 testVector = {1, 1, 1, 0};
 
-    Vector4 rotatedVector = ZRotMatrix * testVector;
+    for (auto& vertex : gMesh)
+    {
+		Vector4 rotatedVector = ZRotMatrix * Vector4{vertex.x, vertex.y, vertex.z, 1};
+		vertex.x = rotatedVector.x;
+		vertex.y = rotatedVector.y;
+		vertex.z = rotatedVector.z;
+	}
 
-    LOG(_T("Vector : {%f, %f, %f, %f} \n"), testVector.x, testVector.y, testVector.z, testVector.w);
-    LOG(_T("Rotated Vector : {%f, %f, %f, %f}, Angle {%f} \n"), rotatedVector.x, rotatedVector.y, rotatedVector.z, rotatedVector.w, rX);
-
+    LOG(_T("Current Angle : {%f}\n"), rX);
 }
 
 void Render()
@@ -294,6 +299,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             {
                 // TODO: Add any drawing code that uses hdc here...
+                InvalidateRect(hWnd,NULL,TRUE);
                 gRenderer.OnPaint(hdc);
             }
             EndPaint(hWnd, &ps);
