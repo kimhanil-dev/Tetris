@@ -38,3 +38,12 @@
 TCHAR* catStart = mLogBuffer + mLogBufferUsedSize;
 _vstprintf_s(catStart, mLogBufferSize - mLogBufferUsedSize, format, args); // NULL이 추가되는 부분
 ```
+
+- 서적
+- [전파거북이와 함께 아름다운 공학 수학](https://blog.naver.com/ghebook/30113491161) 
+- 이득우의 게임 수학
+- DirectX11으로 시작하는 3D게임 프로그래밍
+- 프로그래머를 위한 선형대
+- 셰이더 프로그래밍 입문
+- 게임 프로그래밍 패턴
+- 제프리 리처의 WINDOWS VIA C/C++
