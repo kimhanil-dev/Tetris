@@ -143,19 +143,29 @@ void Update()
     XRotMatrix._m32 = cos(rotateRadian);
     XRotMatrix._m33 = -sin(rotateRadian);
 
+    // y를 회전축으로 하는 회전
     YRotMatrix._m11 = cos(rotateRadian);
     YRotMatrix._m13 = -sin(rotateRadian);
     YRotMatrix._m31 = sin(rotateRadian);
     YRotMatrix._m33 = cos(rotateRadian);
 
     Matrix4 RotMatrix = XRotMatrix * YRotMatrix * ZRotMatrix;
+
+    // 스케일
     Matrix4 ScaleMatrix;
     Matrix4::Identity(ScaleMatrix);
     ScaleMatrix._m11 = 3.0f;
     ScaleMatrix._m22 = 3.0f;
     ScaleMatrix._m33 = 3.0f;
 
-    Matrix4 TransMatrix = ScaleMatrix * RotMatrix;
+    // 이동
+    Matrix4 TranslationMatrix;
+    Matrix4::Identity(TranslationMatrix);
+    TranslationMatrix._m41 = 500.0f;
+    TranslationMatrix._m42 = 500.0f;
+    TranslationMatrix._m43 = 500.0f;
+
+    Matrix4 TransMatrix = ScaleMatrix * RotMatrix * TranslationMatrix;
 
     // 계산
     for (int i = 0; i < gMesh.size(); ++i)
@@ -302,7 +312,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
             case ID_ACTION_DRAW:
                 LOG(_T("%s\n"), _T("Draw 버튼 클릭됨"));
-                Render();
+                RedrawWindow(GetActiveWindow(), 0, 0, RDW_INTERNALPAINT);
                 break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);

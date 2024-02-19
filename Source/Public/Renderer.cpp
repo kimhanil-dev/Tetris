@@ -57,24 +57,25 @@ void Renderer::OnPaint(HDC hdc)
 		return;
 	}
 
+	vector<PointF> mPoints;
 	for (const auto& renderJob : mRenderQueue)
 	{
 		for (int index = 0; index < (renderJob.mIndexCount - 1); ++index)
 		{
 			PointF p1, p2;
 			
-			static const int POSITION_OFFSET = 500;
+			p1.X = renderJob.mVertices[renderJob.mIndices[index]].x;
+			p1.Y = renderJob.mVertices[renderJob.mIndices[index]].y;
 
-			p1.X = renderJob.mVertices[renderJob.mIndices[index]].x + POSITION_OFFSET;
-			p1.Y = renderJob.mVertices[renderJob.mIndices[index]].y + POSITION_OFFSET;
+			p2.X = renderJob.mVertices[renderJob.mIndices[index + 1]].x;
+			p2.Y = renderJob.mVertices[renderJob.mIndices[index + 1]].y;
 
-			p2.X = renderJob.mVertices[renderJob.mIndices[index + 1]].x + POSITION_OFFSET;
-			p2.Y = renderJob.mVertices[renderJob.mIndices[index + 1]].y + POSITION_OFFSET;
-
-
-			mGraphics->DrawLine(mPen,p1,p2);
+			mPoints.push_back(p1);
+			mPoints.push_back(p2);
 		}
 	}
+
+	mGraphics->DrawLines(mPen, mPoints.data(), mPoints.size());
 
 	mRenderQueue.clear();
 }
