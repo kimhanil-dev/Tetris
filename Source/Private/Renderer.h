@@ -11,18 +11,42 @@ using namespace Gdiplus;
 
 using namespace std;
 
-class Vertex
+struct Vertex
 {
-public:
 	float x, y, z;
 	float r, g, b, a;
 };
 
 struct RenderJob
 {
-	const Vertex*	mVertices;
-	const int*		mIndices;
-	const int 		mIndexCount;		
+	RenderJob(const Vertex* vertices, const int vertexCount, const int* indices, const int indexCount)
+		:mIndexCount(indexCount)
+	{
+		mVertices = new Vertex[vertexCount];
+		mIndices = new int[indexCount];
+		memcpy((void*)mVertices, vertices, sizeof(Vertex) * vertexCount);
+		memcpy((void*)mIndices, indices, sizeof(int) * indexCount);
+	}
+
+	~RenderJob()
+	{
+		if(mVertices != nullptr)
+		{
+			delete[] mVertices;
+			mVertices = nullptr;
+		}
+
+		if (mIndices != nullptr)
+		{
+			delete[] mIndices;
+			mIndices = nullptr;
+		}
+		
+	}
+
+	const Vertex*	mVertices	= nullptr;
+	const int*		mIndices	= nullptr;
+	const int 		mIndexCount	= 0;		
 };
 
 class Renderer
@@ -36,7 +60,7 @@ public:
 	void Release();
 	void OnPaint(HDC hdc);
 
-	void PushVertexBuffer(const Vertex* vertices, const int* indices, const int indexCount);
+	void PushVertexBuffer(const Vertex* vertices, const int vertexCount, const int* indices, const int indexCount);
 protected:
 	GdiplusStartupInput mGdiplusStartupInput;
 	ULONG_PTR			mGdiplusToken				= NULL;

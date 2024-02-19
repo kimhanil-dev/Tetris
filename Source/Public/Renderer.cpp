@@ -75,9 +75,14 @@ void Renderer::OnPaint(HDC hdc)
 			mGraphics->DrawLine(mPen,p1,p2);
 		}
 	}
+
+	mRenderQueue.clear();
 }
 
-void Renderer::PushVertexBuffer(const Vertex* vertices, const int* indices, const int indexCount)
+void Renderer::PushVertexBuffer(const Vertex* vertices, const int vertexCount, const int* indices, const int indexCount)
 {
-	mRenderQueue.push_back({vertices, indices, indexCount});
+	if(vertexCount == 0)
+		return;
+
+	mRenderQueue.emplace_back(vertices, vertexCount, indices, indexCount);
 }

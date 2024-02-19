@@ -43,6 +43,8 @@ vector<Vertex>  gMesh;
 vector<int>     gIndices;
 int             gIndexCount = 0;
 
+vector<Vertex> gRenderMesh;
+
 void Init()
 {
     gRenderer.Initialize(GetActiveWindow());
@@ -106,7 +108,7 @@ void Init()
             }
         }
 
-        gRenderer.PushVertexBuffer(gMesh.data(), gIndices.data(), gIndexCount);
+        gRenderMesh = gMesh;
 
         scene->Destroy();
         importer->Destroy();
@@ -124,30 +126,52 @@ void Update()
     rX += 1.0f;
     float rotateRadian = rX * 3.141592f / 180;
     
-    Matrix4 ZRotMatrix;
+    Matrix4 ZRotMatrix, XRotMatrix, YRotMatrix;
     Matrix4::Identity(ZRotMatrix);
+    Matrix4::Identity(XRotMatrix);
+    Matrix4::Identity(YRotMatrix);
 
+    // Z를 회전축으로 하는 회전
     ZRotMatrix._m11 = cos(rotateRadian);
     ZRotMatrix._m12 = -sin(rotateRadian);
     ZRotMatrix._m21 = sin(rotateRadian);
     ZRotMatrix._m22 = cos(rotateRadian);
 
-    Vector4 testVector = {1, 1, 1, 0};
+    // x를 회전축으로 하는 회전
+    XRotMatrix._m22 = sin(rotateRadian);
+    XRotMatrix._m23 = cos(rotateRadian);
+    XRotMatrix._m32 = cos(rotateRadian);
+    XRotMatrix._m33 = -sin(rotateRadian);
 
-    for (auto& vertex : gMesh)
+    YRotMatrix._m11 = cos(rotateRadian);
+    YRotMatrix._m13 = -sin(rotateRadian);
+    YRotMatrix._m31 = sin(rotateRadian);
+    YRotMatrix._m33 = cos(rotateRadian);
+
+    Matrix4 RotMatrix = XRotMatrix * YRotMatrix * ZRotMatrix;
+    Matrix4 ScaleMatrix;
+    Matrix4::Identity(ScaleMatrix);
+    ScaleMatrix._m11 = 3.0f;
+    ScaleMatrix._m22 = 3.0f;
+    ScaleMatrix._m33 = 3.0f;
+
+    Matrix4 TransMatrix = ScaleMatrix * RotMatrix;
+
+    // 계산
+    for (int i = 0; i < gMesh.size(); ++i)
     {
-		Vector4 rotatedVector = ZRotMatrix * Vector4{vertex.x, vertex.y, vertex.z, 1};
-		vertex.x = rotatedVector.x;
-		vertex.y = rotatedVector.y;
-		vertex.z = rotatedVector.z;
-	}
+        Vector4 transformedVertex = TransMatrix * Vector4{gMesh[i].x, gMesh[i].y, gMesh[i].z, 1};
+        gRenderMesh[i] = Vertex(transformedVertex.x,transformedVertex.y,transformedVertex.z);
+    }
+
+    RedrawWindow(GetActiveWindow(), 0, 0, RDW_INTERNALPAINT);
 
     LOG(_T("Current Angle : {%f}\n"), rX);
 }
 
 void Render()
 {
-    RedrawWindow(GetActiveWindow(), 0, 0, RDW_INTERNALPAINT);
+    gRenderer.PushVertexBuffer(gRenderMesh.data(), gRenderMesh.size(), gIndices.data(), gIndexCount);
 }
 
 void Release()
@@ -195,7 +219,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
         }
 
         Update();
-        Render();
     }
 
     Release();
@@ -295,6 +318,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+            Render();
+
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             {
